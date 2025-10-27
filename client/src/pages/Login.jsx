@@ -1,10 +1,12 @@
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../components/context/AuthContext";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { setSenderId } from "../redux/slice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [IsLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +14,7 @@ const Login = () => {
   const [SignupUsername, setSignupUsername] = useState("");
   const [SignupPassword, setSignupPassword] = useState("");
   const toggleLogin = () => setIsLogin((prev) => !prev);
+  
 
   // const { setIsAuthenticated } = useContext(AuthContext);
 
@@ -23,18 +26,39 @@ const Login = () => {
         { username: username, password: password },
         { withCredentials: true }
       );
-      // console.log(res.data.message);
+      // console.log(res.data);
+      console.log(res.data.existingUser._id);
+      dispatch(setSenderId(res.data.existingUser._id))
       toast.success(res.data.message);
       // setIsAuthenticated(true);
       navigate("/main");
       setUsername("");
       setPassword("");
     } catch (error) {
-      // console.log(error.response.data.message);
+      console.log(error.response.data.message);
 
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
     }
   };
+
+  const signupHandle = async () => {
+    try {
+        const res = await axios.post(
+        "http://localhost:3000/api/v1/user/sign-up",
+        { name: SignUpName, username: SignupUsername, password: SignupPassword },
+        { withCredentials: true }
+      );
+      toast.success(res.data.message);
+      setSignUpName("");
+      setSignupUsername("");
+      setSignupPassword("");
+      navigate("/login");
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
   return (
     <div className="min-h-screen bg-orange-950 flex items-center justify-center p-4">
@@ -108,7 +132,7 @@ const Login = () => {
               placeholder="Enter Paaword"
               className="w-full py-2 px-1 border border-white/10 rounded-lg "
             />
-            <button className="bg-orange-950 text-[#d6b28d] font-semibold py-2 px-20 rounded shadow hover:bg-white/20 transition">
+            <button onClick={signupHandle} className="bg-orange-950 text-[#d6b28d] font-semibold py-2 px-20 rounded shadow hover:bg-white/20 transition">
               Signup
             </button>
           </div>

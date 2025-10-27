@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IoSend } from "react-icons/io5";
+// import { IoSend } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
+import MessageInput from "./MessageInput";
+import { useRef } from "react";
+import ChatListItem from "./ChatHeader";
 
 const ChatItem = () => {
   const socket = useSocket();
@@ -13,14 +16,14 @@ const ChatItem = () => {
   const params = useParams();
   const chatId = params.id;
   useEffect(() => {
-    console.log(chatId);
+    // console.log(chatId);
     const fetchMessageFromDB = async () => {
       try {
         const res = await axios.get(
           `http://localhost:3000/api/v1/chat/get-message/${chatId}`,
           { withCredentials: true }
         );
-        console.log("chat res", res.data.message);
+        // console.log("chat res", res.data.message);
         setOldMessages(res.data.message);
       } catch (err) {
         console.error(
@@ -33,23 +36,23 @@ const ChatItem = () => {
     if (chatId) fetchMessageFromDB();
   }, [chatId]);
 
-  const sendHandler = () => {
-    if (!InputMessage.trim()) return;
+  // const sendHandler = () => {
+  //   if (!InputMessage.trim()) return;
 
-    socket.emit("SEND-MESSAGE", {
-      chatId,
-      InputMessage,
-    });
+  //   socket.emit("SEND-MESSAGE", {
+  //     chatId,
+  //     InputMessage,
+  //   });
 
-    console.log("sent:", InputMessage);
-    setInputMessage(""); // input clear
-  };
+  //   // console.log("sent:", InputMessage);
+  //   setInputMessage("");
+  // };
 
   useEffect(() => {
     if (!socket) return;
 
     const handleReceive = (msg) => {
-      console.log("new message:", msg);
+      // console.log("new message:", msg);
       setOldMessages((prev) => [...prev, msg]);
     };
 
@@ -60,23 +63,54 @@ const ChatItem = () => {
     };
   }, [socket]);
 
+  const onSend = (messageText)=>{
+        socket.emit("SEND-MESSAGE", {
+          chatId,
+          InputMessage: messageText
+        })
+        console.log("sendt", messageText);
+        
+      }
+      const chatContainerRef = useRef(null);
+
+useEffect(() => {
+  
+  if (chatContainerRef.current) {
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  }
+}, [OldMessages]); // scroll bottom whenever OldMessages changes
+
   return (
     <>
+    <div className="">
+      <div className="b-2 pb-2 mb-2 h-12 bg-black">
+        <ChatListItem />
+      </div>
+      <div 
+      ref={chatContainerRef}
+      className="h-[73vh] overflow-y-scroll flex flex-col">
       {OldMessages && OldMessages.length > 0 ? (
         OldMessages.map((oldMessage, i) => {
-          const sameSender = oldMessage.sender === senderId;
+          // console.log("oldmessage",oldMessage.sender._id);
+          // console.log("senderid",senderId);
+          
+          const sameSender = 
+          oldMessage.sender?._id === senderId ||
+          oldMessage.senderId === senderId ||
+          oldMessage.sender === senderId;
+          // oldMessage.sender._id === senderId;
           // const sameSender = 0 == 0;
-          console.log("samesender", sameSender);
+          // console.log("samesender", sameSender);
 
           return (
             <div
               key={i}
-              className={`flex ${sameSender ? "justify-start" : "justify-end"}`}
+              className={`flex ${sameSender ? "justify-end" : "justify-start"}`}
             >
               <div
                 className={`${
-                  sameSender ? "text-start" : "text-end"
-                }max-w-[50%] w-fit pl-2 pr-12 rounded-lg m-2 bg-white/5 flex flex-col items-center`}
+                  sameSender ? "text-end" : "text-start"
+                }max-w-[50%] w-fit pl-3 pr-3 py-2 rounded-lg my-0.5 bg-white/5 flex flex-col items-center`}
               >
                 <small className="font-semibold text-yellow-300 ">
                   {oldMessage.sender?.name}
@@ -89,7 +123,8 @@ const ChatItem = () => {
       ) : (
         <div>No message yet</div>
       )}
-      <div className="w-full flex items-center border rounded-lg p-2 bg-gray-800">
+      {/* <form action="">
+        <div className="w-full flex items-center border rounded-lg p-2 bg-gray-800">
         <input
           type="text"
           className="flex-1 bg-transparent outline-none text-white px-2"
@@ -103,6 +138,12 @@ const ChatItem = () => {
         >
           <IoSend size={24} />
         </button>
+      </div>
+      </form> */}
+      </div>
+      <div className="mt-2">
+        <MessageInput onSend={onSend} />
+        </div>
       </div>
     </>
   );

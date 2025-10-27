@@ -13,6 +13,8 @@ const {
   acceptFriendRequest,
   getAllRequest,
   countRequset,
+  getUserDetails,
+  getChatById,
 } = require("../controllers/user.controller");
 const { authenticateToken } = require("../../middleware/auth");
 
@@ -24,6 +26,8 @@ router.post("/sign-in", signIn);
 
 router.get("/get-me", authenticateToken, getMe);
 router.get("/get-users", authenticateToken, getAllUsers);
+router.get("/get-my-chat/:chatId", authenticateToken, getChatById);
+
 
 router.get("/log-out", authenticateToken, logOut);
 // router.get("/search", authenticateToken, searchUser);

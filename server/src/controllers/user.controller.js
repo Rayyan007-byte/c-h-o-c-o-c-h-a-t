@@ -256,6 +256,20 @@ const countRequset = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+// get users details
+const getChatById = async (req, res) => {
+  const { chatId } = req.params;
+  try {
+    const chat = await Chat.findById(chatId).populate("members", "name");
+    if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+    
+    res.status(200).json({ success: true, chat });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 
 module.exports = {
   signUp,
@@ -268,4 +282,5 @@ module.exports = {
   acceptFriendRequest,
   getAllRequest,
   countRequset,
+  getChatById
 };

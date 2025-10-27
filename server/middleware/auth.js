@@ -27,12 +27,16 @@ const socketAuthenticator = async (err, socket, next) => {
   try {
     if (err) return next(err);
     const authToken = socket.request.cookies.token;
+    console.log("authtoken", authToken);
+    
 
     if (!authToken) {
       return next(new Error("Invalid Login to access this route"));
     }
 
     jwt.verify(authToken, process.env.JWT_SECRET, async (err, decoded) => {
+      console.log("decoded", decoded);
+      
       const user = await User.findById(decoded.id);
       console.log("user", user);
       if (!user) return next(new Error("User not found"));
