@@ -37,17 +37,16 @@ io.on("connection", (socket) => {
 
     const messageForRealTime = {
       chat: chatId,
-      sender: user._id,
+      sender: {_id: user._id, name: user.name},
 
       message: InputMessage,
     };
 
-    console.log(messageForRealTime);
+    console.log("messageforreal",messageForRealTime);
 
     const messageForDB = {
       chat: chatId,
       sender: user._id,
-
       message: InputMessage,
     };
     const newMessage = new Message(messageForDB);

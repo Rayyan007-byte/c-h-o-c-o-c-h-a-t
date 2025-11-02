@@ -23,7 +23,7 @@ const ChatItem = () => {
           `http://localhost:3000/api/v1/chat/get-message/${chatId}`,
           { withCredentials: true }
         );
-        // console.log("chat res", res.data.message);
+        console.log("chat res", res.data.message);
         setOldMessages(res.data.message);
       } catch (err) {
         console.error(
@@ -36,17 +36,7 @@ const ChatItem = () => {
     if (chatId) fetchMessageFromDB();
   }, [chatId]);
 
-  // const sendHandler = () => {
-  //   if (!InputMessage.trim()) return;
 
-  //   socket.emit("SEND-MESSAGE", {
-  //     chatId,
-  //     InputMessage,
-  //   });
-
-  //   // console.log("sent:", InputMessage);
-  //   setInputMessage("");
-  // };
 
   useEffect(() => {
     if (!socket) return;
@@ -64,11 +54,13 @@ const ChatItem = () => {
   }, [socket]);
 
   const onSend = (messageText)=>{
+ 
         socket.emit("SEND-MESSAGE", {
           chatId,
-          InputMessage: messageText
+          InputMessage: messageText,
+          
         })
-        console.log("sendt", messageText);
+        // console.log("sendt", messageText, chatId);
         
       }
       const chatContainerRef = useRef(null);
@@ -91,8 +83,11 @@ useEffect(() => {
       className="h-[73vh] overflow-y-scroll flex flex-col">
       {OldMessages && OldMessages.length > 0 ? (
         OldMessages.map((oldMessage, i) => {
-          // console.log("oldmessage",oldMessage.sender._id);
+          // console.log("oldmessage",oldMessage);
           // console.log("senderid",senderId);
+          const groupChat = oldMessage.chat.groupChat;
+          // console.log("groupcht", groupChat);
+          
           
           const sameSender = 
           oldMessage.sender?._id === senderId ||
@@ -109,11 +104,12 @@ useEffect(() => {
             >
               <div
                 className={`${
-                  sameSender ? "text-end" : "text-start"
-                }max-w-[50%] w-fit pl-3 pr-3 py-2 rounded-lg my-0.5 bg-white/5 flex flex-col items-center`}
+                  sameSender ? "items-end text-end" : "items-start text-start"
+                }max-w-[50%] w-fit pl-3 pr-3 py-2 rounded-lg my-0.5 bg-white/5 flex flex-col`}
               >
-                <small className="font-semibold text-yellow-300 ">
-                  {oldMessage.sender?.name}
+                <small className="font-semibold text-yellow-300">
+                  { sameSender ? "" : oldMessage.sender?.name}
+                  {/* { groupChat == true && !sameSender ? "" : oldMessage.sender?.name} */}
                 </small>
                 <div className="text-xl">{oldMessage.message}</div>
               </div>

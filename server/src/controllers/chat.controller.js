@@ -254,37 +254,37 @@ const deleteChat = async (req, res) => {
 };
 
 // sendmessagess
-const sendMessage = async (req, res) => {
-  try {
-    const { chatId } = req.body;
-    const [chat, me] = await Promise.all([
-      Chat.findById(chatId),
-      User.findById(req.user),
-    ]);
-    if (!chat)
-      return res
-        .status(400)
-        .json({ success: false, message: "Chat not found" });
+// const sendMessage = async (req, res) => {
+//   try {
+//     const { chatId } = req.body;
+//     const [chat, me] = await Promise.all([
+//       Chat.findById(chatId),
+//       User.findById(req.user),
+//     ]);
+//     if (!chat)
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Chat not found" });
 
-    // messageFor db
-    const messageForDB = {
-      message: "fii",
-      chat: chatId,
-      sender: me._id,
-    };
+//     // messageFor db
+//     const messageForDB = {
+//       message: "fii",
+//       chat: chatId,
+//       sender: me._id,
+//     };
 
-    const message = await Message.create(messageForDB);
+//     const message = await Message.create(messageForDB);
 
-    // message for realtime
-    const messageForRealtime = {};
+//     // message for realtime
+//     const messageForRealtime = {};
 
-    return res.status(200).json({ success: true, chat, me, message });
-  } catch (error) {
-    console.log(error);
+//     return res.status(200).json({ success: true, chat, me, message });
+//   } catch (error) {
+//     console.log(error);
 
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
 // get message
 const getMessage = async (req, res) => {
@@ -293,7 +293,7 @@ const getMessage = async (req, res) => {
     const message = await Message.find({ chat: chatId }).populate(
       "sender",
       "name"
-    );
+    ).populate("chat");
     return res.status(200).json({ success: true, message });
   } catch (error) {
     console.log(error);
@@ -312,5 +312,5 @@ module.exports = {
   renameGroup,
   deleteChat,
   getMessage,
-  sendMessage,
+  // sendMessage,
 };

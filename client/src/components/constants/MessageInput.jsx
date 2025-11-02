@@ -1,10 +1,15 @@
 import React, { useState, Fragment } from "react";
 import { IoSend } from "react-icons/io5";
 
+
 const MessageInput = ({ onSend }) => {
+  // const params = useParams();
   const [messageInput, setMessageInput] = useState("");
+  // console.log(params.id);
+  
 
   const sendHandler = (e) => {
+    
     e.preventDefault(); // 🔥 stops page reload
     if (!messageInput.trim()) return;
     console.log("MessageInput:", messageInput); // this will log correctly

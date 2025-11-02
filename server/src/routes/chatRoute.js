@@ -9,7 +9,7 @@ const {
   renameGroup,
   deleteChat,
   getMessage,
-  sendMessage,
+  // sendMessage,
 } = require("../controllers/chat.controller");
 
 const router = require("express").Router();
@@ -24,7 +24,7 @@ router.put("/add-members", authenticateToken, addMembers);
 
 router.put("/remove-members", authenticateToken, removeMembers);
 
-router.post("/message", authenticateToken, sendMessage);
+// router.post("/message", authenticateToken, sendMessage);
 router.get("/get-message/:id", authenticateToken, getMessage);
 
 router

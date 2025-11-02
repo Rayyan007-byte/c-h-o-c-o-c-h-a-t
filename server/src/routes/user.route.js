@@ -26,11 +26,12 @@ router.post("/sign-in", signIn);
 
 router.get("/get-me", authenticateToken, getMe);
 router.get("/get-users", authenticateToken, getAllUsers);
+// router.get("/get-new-contact", authenticateToken, newContact);
 router.get("/get-my-chat/:chatId", authenticateToken, getChatById);
 
 
 router.get("/log-out", authenticateToken, logOut);
-// router.get("/search", authenticateToken, searchUser);
+router.get("/search", authenticateToken, searchUser);
 
 router.put("/send-request", authenticateToken, sendFriendRequest);
 router.get("/get-count-request", authenticateToken, countRequset);

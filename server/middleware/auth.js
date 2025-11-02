@@ -36,6 +36,11 @@ const socketAuthenticator = async (err, socket, next) => {
 
     jwt.verify(authToken, process.env.JWT_SECRET, async (err, decoded) => {
       console.log("decoded", decoded);
+       if (err) {
+          console.log("JWT verify failed:", err.message);
+          return next(); // just skip auth, don't crash
+        }
+        if (!decoded) return next();
       
       const user = await User.findById(decoded.id);
       console.log("user", user);

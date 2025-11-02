@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { setSenderId } from "../redux/slice";
+import { setIsLoggedIn, setSenderId } from "../redux/slice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -14,6 +14,7 @@ const Login = () => {
   const [SignupUsername, setSignupUsername] = useState("");
   const [SignupPassword, setSignupPassword] = useState("");
   const toggleLogin = () => setIsLogin((prev) => !prev);
+  // const userAithenticate = useSelector((state)=>state.userId.isLoggedIn)
   
 
   // const { setIsAuthenticated } = useContext(AuthContext);
@@ -34,6 +35,7 @@ const Login = () => {
       navigate("/main");
       setUsername("");
       setPassword("");
+
     } catch (error) {
       console.log(error.response.data.message);
 
@@ -53,7 +55,7 @@ const Login = () => {
       setSignupUsername("");
       setSignupPassword("");
       navigate("/login");
-      
+      dispatch(setIsLoggedIn(true))
     } catch (error) {
       console.log(error);
       

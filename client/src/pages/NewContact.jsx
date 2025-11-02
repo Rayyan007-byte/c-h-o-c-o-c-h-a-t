@@ -14,8 +14,8 @@ const NewContact = () => {
         "http://localhost:3000/api/v1/user/get-users",
         { withCredentials: true }
       );
-      console.log("userssss", res.data.allUsers);
-      setAllUsers(res.data.allUsers);
+      console.log("userssss", res.data.newMember);
+      setAllUsers(res.data.newMember);
     };
     fetchAllUsers();
   }, []);
@@ -49,11 +49,11 @@ const NewContact = () => {
         <input
           type="text"
           placeholder="Group Name"
-          className="w-full mb-2 p-1 border border-gray-300 rounded"
+          className="w-full mb-3 p-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
         />
 
         {/* Scrollable User List */}
-        <div className="flex-1 overflow-y-auto border p-1 space-y-2">
+        <div className="flex-1 overflow-y-auto p-1 space-y-2">
           {AllUsers?.map((user) => (
             <div
               key={user._id}
@@ -68,12 +68,7 @@ const NewContact = () => {
           ))}
         </div>
 
-        <button
-          className="bg-orange-500 text-white px-4 py-1 rounded hover:bg-orange-600 mt-4 w-full"
-          onClick={() => setShowGroupForm(false)}
-        >
-          Create
-        </button>
+        
       </div>
     </>
   );

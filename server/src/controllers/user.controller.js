@@ -95,13 +95,23 @@ const getAllUsers = async (req, res) => {
   const userId = req.user;
 
   try {
+    const existnigChat = await Chat.find({ members: { $in: [userId]}}).populate("members");
     const allUsers = await User.find({ _id: { $ne: userId } });
+    const otherMembersId = existnigChat
+      .map((chat) => chat.members)
+      .flat()
+      .filter((member) => member._id.toString() !== userId.toString());
+
+      const newMember = allUsers.filter((user) => {
+        return !otherMembersId.some((member) => member._id.toString() === user._id.toString());
+      })
+    
     res
       .status(200)
-      .json({ success: true, message: "Fetched userss", allUsers });
+      .json({ success: true, message: "Fetched userss", existnigChat, otherMembersId, newMember });
   } catch (error) {
     console.log(error);
-    e;
+    
 
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -113,7 +123,7 @@ const searchUser = async (req, res) => {
 
   try {
     console.log("serching");
-    const { name } = req.query;
+    const { name = "" } = req.query;
 
     const myChats = await Chat.find({ groupChat: false, members: req.user });
 
@@ -282,5 +292,6 @@ module.exports = {
   acceptFriendRequest,
   getAllRequest,
   countRequset,
-  getChatById
+  getChatById,
+  
 };
