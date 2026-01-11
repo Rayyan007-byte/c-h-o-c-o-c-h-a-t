@@ -30,9 +30,16 @@ io.use((socket, next) => {
 });
 io.on("connection", (socket) => {
   const user = socket.user;
+console.log('userrr',user);
+ if (!user) {
+    console.log("❌ Socket connected without valid user");
+    socket.disconnect(true);
+    return;
+  }
 
   console.log("user connected", socket.id, user._id);
   socket.on("SEND-MESSAGE", async ({ chatId, InputMessage }) => {
+    if (!socket.user) return;
     console.log(chatId, InputMessage);
 
     const messageForRealTime = {

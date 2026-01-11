@@ -1,0 +1,10 @@
+export const goldenSand = "rgba(215,171,92, 1)";
+export const goldenSandLight = "rgba(215,171,92, 0.2)";
+export const SlateBlue = '#556171';
+export const SteelBlue = 'rgb(121,136,157)';
+export const cadetBlue = "rgb(137,151,166)";
+export const cadetBlueLight = "rgba(137,151,166, 0.2)";
+export const darkOrange = "#FF8C00";
+export const aliceBlue = "#0000FF";
+export const bisque = "#FFE4C4";
+export const chocolate = "#D2691E";
