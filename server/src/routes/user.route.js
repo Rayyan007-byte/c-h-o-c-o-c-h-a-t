@@ -15,6 +15,7 @@ const {
   countRequset,
   getUserDetails,
   getChatById,
+  getMyRequest,
 } = require("../controllers/user.controller");
 const { authenticateToken } = require("../../middleware/auth");
 
@@ -36,6 +37,7 @@ router.get("/search", authenticateToken, searchUser);
 router.put("/send-request", authenticateToken, sendFriendRequest);
 router.get("/get-count-request", authenticateToken, countRequset);
 router.get("/get-request", authenticateToken, getAllRequest);
+router.get("/get-my-request", authenticateToken, getMyRequest);
 
 router.put("/accept-request", authenticateToken, acceptFriendRequest);
 

@@ -1,13 +1,14 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { GiCheckMark } from "react-icons/gi";
 import { IoIosArrowRoundBack, IoMdAdd } from "react-icons/io";
 import { Link } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
-import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 
 const NewContact = () => {
   const [AllUsers, setAllUsers] = useState([]);
+  const [Request, setRequest] = useState();
   useEffect(() => {
     const fetchAllUsers = async () => {
       const res = await axios.get(
@@ -34,6 +35,24 @@ const NewContact = () => {
       console.error(error);
     }
   };
+  useEffect(() => {
+    const getMyRequest = async () => {
+      const res = await axios(
+        "http://localhost:3000/api/v1/user/get-my-request",
+        { withCredentials: true }
+      );
+      
+      const status = res.data.myrequest;
+      console.log("stat", status);
+      
+      status.forEach((e) => {
+        console.log("e",e.status);
+        setRequest(e);
+      });
+    };
+    getMyRequest();
+  }, []);
+console.log("Request",Request);
 
   return (
     <>
@@ -60,15 +79,17 @@ const NewContact = () => {
               className="flex justify-between items-center h-10 bg-white/10 rounded px-2"
             >
               {user.name}
-              <IoMdAdd
-                className="text-2xl hover:bg-amber-950 rounded-lg"
-                onClick={() => sendRequest(user._id)}
-              />
+              {Request == "pending" ? (
+                <GiCheckMark className="text-2xl hover:bg-amber-950 rounded-lg" />
+              ) : (
+                <IoMdAdd
+                  className="text-2xl hover:bg-amber-950 rounded-lg"
+                  onClick={() => sendRequest(user._id)}
+                />
+              )}
             </div>
           ))}
         </div>
-
-        
       </div>
     </>
   );

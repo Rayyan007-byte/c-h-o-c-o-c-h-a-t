@@ -15,7 +15,9 @@ import ChatManagement from "./pages/admin/ChatManagement";
 import Dashboard from "./pages/admin/Dashboard";
 import MessageManagement from "./pages/admin/MessageManagement";
 import UserManagement from "./pages/admin/UserManagement";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+const user = true;
 const App = () => {
   return (
     <>
@@ -23,15 +25,16 @@ const App = () => {
 
       <SocketProvider>
         <Routes>
+          <Route element={<ProtectedRoute user={user} />}>
           <Route path="/chat/:id" element={<Chat />} />
           <Route path="/newcontact" element={<NewContact />} />
           <Route path="/group" element={<Group />} />
           <Route path="/app" element={<AppLayout />} />
-          <Route path="/main" element={<Main />} />
-
+          <Route path="/main" element={<Main />} />          
+          <Route path="/me" element={<MyProfile />} />
+          </Route>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/me" element={<MyProfile />} />
 
           
         </Routes>

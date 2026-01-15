@@ -169,13 +169,14 @@ const sendFriendRequest = async (req, res) => {
         { sender: userId, receiver: req.user },
       ],
     });
+    
     if (request)
       return res.status(400).json({ message: "Request already sent" });
 
     const newRequest = new Request({ sender: userId, receiver: req.user });
     await newRequest.save();
     emitEvent(req, NEW_REQUSET, [userId]);
-    return res.status(200).json({ message: "Friend Request Sent" });
+    return res.status(200).json({success: true, message: "Friend Request Sent" });
   } catch (error) {
     console.log(error);
 
@@ -247,6 +248,22 @@ const getAllRequest = async (req, res) => {
   }
 };
 
+// get myh requset
+const getMyRequest = async (req, res) => {
+  try {
+    const userId = req.user;
+    const myrequest = await Request.find({$or: [{ sender: userId },{ receiver: userId }]})
+
+    return res
+      .status(200)
+      .json({ success: true, message: "request ", userId, myrequest });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // count requset
 
 const countRequset = async (req, res) => {
@@ -293,5 +310,6 @@ module.exports = {
   getAllRequest,
   countRequset,
   getChatById,
+  getMyRequest
   
 };
