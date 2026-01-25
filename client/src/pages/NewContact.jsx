@@ -8,12 +8,13 @@ import MainLayout from "../components/layout/MainLayout";
 
 const NewContact = () => {
   const [AllUsers, setAllUsers] = useState([]);
-  const [Request, setRequest] = useState();
+  const [requestMap, setRequestMap] = useState({});
+
   useEffect(() => {
     const fetchAllUsers = async () => {
       const res = await axios.get(
         "http://localhost:3000/api/v1/user/get-users",
-        { withCredentials: true }
+        { withCredentials: true },
       );
       console.log("userssss", res.data.newMember);
       setAllUsers(res.data.newMember);
@@ -26,9 +27,12 @@ const NewContact = () => {
       await axios.put(
         "http://localhost:3000/api/v1/user/send-request",
         { userId },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-
+      setRequestMap((prev) => ({
+        ...prev,
+        [userId]: "pending",
+      }));
       toast.success("Request sent successfully!");
     } catch (error) {
       toast.error("Failed to send request");
@@ -37,22 +41,25 @@ const NewContact = () => {
   };
   useEffect(() => {
     const getMyRequest = async () => {
-      const res = await axios(
+      const res = await axios.get(
         "http://localhost:3000/api/v1/user/get-my-request",
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      
-      const status = res.data.myrequest;
-      console.log("stat", status);
-      
-      status.forEach((e) => {
-        console.log("e",e.status);
-        setRequest(e);
+
+      const map = {};
+
+      res.data.myrequest.forEach((req) => {
+        const otherUser =
+          req.sender === res.data.userId ? req.receiver : req.sender;
+
+        map[otherUser] = req.status;
       });
+
+      setRequestMap(map);
     };
+
     getMyRequest();
   }, []);
-console.log("Request",Request);
 
   return (
     <>
@@ -62,14 +69,8 @@ console.log("Request",Request);
       >
         <IoIosArrowRoundBack className="text-3xl" />
       </Link>
-      <div className="absolute ml-15 bg-white/5 border border-amber-400 rounded-lg p-4 shadow-lg w-100 h-[32rem] z-50 flex flex-col">
-        <h2 className="text-lg font-semibold mb-2">New Contact</h2>
-
-        <input
-          type="text"
-          placeholder="Group Name"
-          className="w-full mb-3 p-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-        />
+      <div className="absolute bg-white/5 rounded-lg p-4 shadow-lg w-full max-w-[28rem] sm:max-w-[24rem] h-[32rem] z-50 flex flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <h2 className="text-lg font-semibold mb-2 text-gray-200">New Contact</h2>
 
         {/* Scrollable User List */}
         <div className="flex-1 overflow-y-auto p-1 space-y-2">
@@ -79,8 +80,8 @@ console.log("Request",Request);
               className="flex justify-between items-center h-10 bg-white/10 rounded px-2"
             >
               {user.name}
-              {Request == "pending" ? (
-                <GiCheckMark className="text-2xl hover:bg-amber-950 rounded-lg" />
+              {requestMap[user._id] === "pending" ? (
+                <GiCheckMark className="text-2xl text-blue-500" />
               ) : (
                 <IoMdAdd
                   className="text-2xl hover:bg-amber-950 rounded-lg"

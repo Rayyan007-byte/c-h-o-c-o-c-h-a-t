@@ -252,14 +252,18 @@ const getAllRequest = async (req, res) => {
 const getMyRequest = async (req, res) => {
   try {
     const userId = req.user;
-    const myrequest = await Request.find({$or: [{ sender: userId },{ receiver: userId }]})
 
-    return res
-      .status(200)
-      .json({ success: true, message: "request ", userId, myrequest });
+    const myrequest = await Request.find({
+      $or: [{ sender: userId }, { receiver: userId }],
+    });
+
+    return res.status(200).json({
+      success: true,
+      myrequest,
+      userId: userId.toString(),
+    });
   } catch (error) {
     console.log(error);
-
     return res.status(500).json({ message: "Internal server error" });
   }
 };

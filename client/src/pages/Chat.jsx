@@ -5,7 +5,7 @@ import ChatItem from "../components/constants/ChatItem";
 const Chat = () => {
   return (
     <>
-      <div className="">
+      <div className="h-full">
         <ChatItem />
       </div>
     </>

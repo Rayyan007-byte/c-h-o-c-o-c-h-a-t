@@ -7,6 +7,7 @@ import { useSocket } from "../context/SocketContext";
 import MessageInput from "./MessageInput";
 import { useRef } from "react";
 import ChatListItem from "./ChatHeader";
+import MessageNotFound from "./MessageNotFound";
 
 const ChatItem = () => {
   const socket = useSocket();
@@ -74,13 +75,13 @@ useEffect(() => {
 
   return (
     <>
-    <div className="">
+    <div className="h-full flex flex-col min-h-0">
       <div className="b-2 pb-2 mb-2 h-12 bg-black">
         <ChatListItem />
       </div>
       <div 
       ref={chatContainerRef}
-      className="h-[73vh] overflow-y-scroll flex flex-col">
+      className="flex-1 min-h-0 overflow-y-auto flex flex-col px-2">
       {OldMessages && OldMessages.length > 0 ? (
         OldMessages.map((oldMessage, i) => {
           // console.log("oldmessage",oldMessage);
@@ -117,27 +118,12 @@ useEffect(() => {
           );
         })
       ) : (
-        <div>No message yet</div>
+        // <div>No message yet</div>
+        <MessageNotFound />
       )}
-      {/* <form action="">
-        <div className="w-full flex items-center border rounded-lg p-2 bg-gray-800">
-        <input
-          type="text"
-          className="flex-1 bg-transparent outline-none text-white px-2"
-          placeholder="Type a message..."
-          value={InputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-        />
-        <button
-          className="text-blue-400 hover:text-blue-600"
-          onClick={sendHandler}
-        >
-          <IoSend size={24} />
-        </button>
+      
       </div>
-      </form> */}
-      </div>
-      <div className="mt-2">
+      <div className="shrink-0">
         <MessageInput onSend={onSend} />
         </div>
       </div>
