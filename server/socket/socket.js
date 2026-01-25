@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   const user = socket.user;
 console.log('userrr',user);
  if (!user) {
-    console.log("❌ Socket connected without valid user");
+    console.log("Socket connected without valid user");
     socket.disconnect(true);
     return;
   }

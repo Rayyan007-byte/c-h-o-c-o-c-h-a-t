@@ -43,7 +43,6 @@ const ChatItem = () => {
     if (!socket) return;
 
     const handleReceive = (msg) => {
-      // console.log("new message:", msg);
       setOldMessages((prev) => [...prev, msg]);
     };
 
@@ -61,7 +60,6 @@ const ChatItem = () => {
           InputMessage: messageText,
           
         })
-        // console.log("sendt", messageText, chatId);
         
       }
       const chatContainerRef = useRef(null);
@@ -71,7 +69,7 @@ useEffect(() => {
   if (chatContainerRef.current) {
     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
   }
-}, [OldMessages]); // scroll bottom whenever OldMessages changes
+}, [OldMessages]);
 
   return (
     <>
@@ -84,19 +82,13 @@ useEffect(() => {
       className="flex-1 min-h-0 overflow-y-auto flex flex-col px-2">
       {OldMessages && OldMessages.length > 0 ? (
         OldMessages.map((oldMessage, i) => {
-          // console.log("oldmessage",oldMessage);
-          // console.log("senderid",senderId);
           const groupChat = oldMessage.chat.groupChat;
-          // console.log("groupcht", groupChat);
           
           
           const sameSender = 
           oldMessage.sender?._id === senderId ||
           oldMessage.senderId === senderId ||
           oldMessage.sender === senderId;
-          // oldMessage.sender._id === senderId;
-          // const sameSender = 0 == 0;
-          // console.log("samesender", sameSender);
 
           return (
             <div
